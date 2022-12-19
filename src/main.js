@@ -7,7 +7,7 @@ const app = express()
 app.use(cors())
 
 const index = new Index()
-const port = process.env.NODE_PORT || 3701
+const port = process.env.NODE_PORT || 3801
 
 const dataDir = process.env.DATA_DIR || '../data'
 const apiDir = process.env.API_DIR || '.'
