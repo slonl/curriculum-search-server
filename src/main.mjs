@@ -40,17 +40,26 @@ dataset.forEach(set => {
     )
 })
 
-Object.keys(curriculum.index.id).forEach(id => {
-    if (curriculum.index.id[id] && curriculum.index.id[id].title) {
-        index.add(id, curriculum.index.id[id].title, curriculum.index.id[id].description)
-    }
+Promise.allSettled(Object.values(schemas))
+.then(() => {
+    Object.keys(curriculum.index.id).forEach(id => {
+        if (curriculum.index.id[id] && curriculum.index.id[id].title) {
+            index.add(id, curriculum.index.id[id].title, curriculum.index.id[id].description)
+//            console.log('added '+id)
+//        } else {
+//            console.log('no '+id)
+        }
+    })
+    console.log(Object.keys(curriculum.index.id).length+' entities indexed')
 })
 
 app.route('/search').get((req,res) => {
     if (!req.query || !req.query.text) {
         res.status(400)
         res.render('error: missing search parameter &quot;text&quot;');
+        console.log('missing search text')
     } else {
+        console.log('search for '+req.query.text)
         const ids = index.search(req.query.text)
         let results = []
         ids.forEach(id => {
@@ -65,6 +74,7 @@ app.route('/search').get((req,res) => {
             results.push(obj)
         })
         res.json(results)
+        console.log(results.length+' results')
     }        
 })
 
