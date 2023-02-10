@@ -1,19 +1,21 @@
-const express = require('express')
-const { Index } = require('flexsearch')
-const { keys } = require('memory-cache')
-const cors = require('cors')
+import express from 'express'
+import flex from 'flexsearch'
+import cache from 'memory-cache'
+import cors from 'cors'
+import Curriculum from 'curriculum-js'
 
 const app = express()
 app.use(cors())
 
-const index = new Index()
+const index = new flex.Index()
 const port = process.env.NODE_PORT || 3701
 
 const dataDir = process.env.DATA_DIR || '../data'
+console.log(dataDir)
+
 const apiDir = process.env.API_DIR || '.'
 
-const curriculumAPI = require(apiDir + '/curriculum')
-const curriculum = curriculumAPI.create()
+const curriculum = new Curriculum()
 
 const dataset = [
     'basis',
@@ -30,9 +32,11 @@ const dataset = [
 let schemas = []
 
 dataset.forEach(set => {
-    schemas[set] = curriculum.loadSchema(
-        dataDir + '/curriculum-' + set + '/context.json', 
-        dataDir + '/curriculum-' + set + '/'
+    console.log(dataDir+'/curriculum-'+set+'/context.json')
+
+    schemas[set] = curriculum.loadContextFromFile(
+        dataDir + '/curriculum-' + set + '/',
+        dataDir + '/curriculum-' + set + '/context.json'
     )
 })
 
