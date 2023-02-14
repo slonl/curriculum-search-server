@@ -2,14 +2,17 @@
   "name": "json-search-server",
   "version": "0.0.1",
   "description": "json text search server",
-  "main": "main.js",
+  "main": "src/main.mjs",
+  "type": "module",
   "scripts": {
+    "start": "node src/main.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "curriculum-js": "^0.3.8",
     "express": "^4.17.3",
     "flexsearch": "^0.7.21",
     "memory-cache": "^0.2.0"

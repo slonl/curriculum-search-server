@@ -1,19 +1,21 @@
-const express = require('express')
-const { Index } = require('flexsearch')
-const { keys } = require('memory-cache')
-const cors = require('cors')
+import express from 'express'
+import flex from 'flexsearch'
+import cache from 'memory-cache'
+import cors from 'cors'
+import Curriculum from 'curriculum-js'
 
 const app = express()
 app.use(cors())
 
-const index = new Index()
-const port = process.env.NODE_PORT || 3801
+const index = new flex.Index()
+const port = process.env.NODE_PORT || 3701
 
 const dataDir = process.env.DATA_DIR || '../data'
+console.log(dataDir)
+
 const apiDir = process.env.API_DIR || '.'
 
-const curriculumAPI = require(apiDir + '/curriculum')
-const curriculum = curriculumAPI.create()
+const curriculum = new Curriculum()
 
 const dataset = [
     'basis',
@@ -30,23 +32,34 @@ const dataset = [
 let schemas = []
 
 dataset.forEach(set => {
-    schemas[set] = curriculum.loadSchema(
-        dataDir + '/curriculum-' + set + '/context.json', 
-        dataDir + '/curriculum-' + set + '/'
+    console.log(dataDir+'/curriculum-'+set+'/context.json')
+
+    schemas[set] = curriculum.loadContextFromFile(
+        dataDir + '/curriculum-' + set + '/',
+        dataDir + '/curriculum-' + set + '/context.json'
     )
 })
 
-Object.keys(curriculum.index.id).forEach(id => {
-    if (curriculum.index.id[id] && curriculum.index.id[id].title) {
-        index.add(id, curriculum.index.id[id].title, curriculum.index.id[id].description)
-    }
+Promise.allSettled(Object.values(schemas))
+.then(() => {
+    Object.keys(curriculum.index.id).forEach(id => {
+        if (curriculum.index.id[id] && curriculum.index.id[id].title) {
+            index.add(id, curriculum.index.id[id].title, curriculum.index.id[id].description)
+//            console.log('added '+id)
+//        } else {
+//            console.log('no '+id)
+        }
+    })
+    console.log(Object.keys(curriculum.index.id).length+' entities indexed')
 })
 
 app.route('/search').get((req,res) => {
     if (!req.query || !req.query.text) {
         res.status(400)
         res.render('error: missing search parameter &quot;text&quot;');
+        console.log('missing search text')
     } else {
+        console.log('search for '+req.query.text)
         const ids = index.search(req.query.text)
         let results = []
         ids.forEach(id => {
@@ -61,6 +74,7 @@ app.route('/search').get((req,res) => {
             results.push(obj)
         })
         res.json(results)
+        console.log(results.length+' results')
     }        
 })
 
