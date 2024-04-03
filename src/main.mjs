@@ -35,7 +35,7 @@ dataset.forEach(set => {
     console.log(dataDir+'/curriculum-'+set+'/context.json')
 
     schemas[set] = curriculum.loadContextFromFile(
-        dataDir + '/curriculum-' + set + '/',
+        'curriculum-' + set,
         dataDir + '/curriculum-' + set + '/context.json'
     )
 })
@@ -66,7 +66,7 @@ app.route('/search').get((req,res) => {
             const obj = Object.assign(
                 {
                     '@type': curriculum.index.type[id],
-                    '@schema': curriculum.index.schema[id]
+                    '@context': 'https://opendata.slo.nl/curriculum/schemas/'+curriculum.index.schema[id]+'/context.json'
                 },
                 curriculum.index.id[id]
             )
