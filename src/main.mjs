@@ -94,7 +94,7 @@ app.route('/search').get((req,res) => {
             const schema = getSchema(type)
             let result = {
                 '@type': type,
-                '@schema': schema
+                '@context': schema
             }
             for (let property in meta.schema.types[type].properties) {
                 result[property] = entity[property]
