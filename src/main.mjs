@@ -44,13 +44,15 @@ jsontag = fs.readFileSync(dataDir + '/data/schema.jsontag', 'utf-8')
 meta.schema = JSONTag.parse(jsontag)
 
 function readCommands(dataDir) {
-    const str = fs.readFileSync(dataDir+'/command-status.jsontag', 'utf-8')
-    const lines = str.split('\n').filter(Boolean)
     const commands = []
-    for (const line of lines) {
-        const command = JSON.parse(line.trim())
-        if (command.status=='done') {
-            commands.push(command.command)
+    if (fs.existsSync(dataDir+'/command-status.jsontag')) {
+        const str = fs.readFileSync(dataDir+'/command-status.jsontag', 'utf-8')
+        const lines = str.split('\n').filter(Boolean)
+        for (const line of lines) {
+            const command = JSON.parse(line.trim())
+            if (command.status=='done') {
+                commands.push(command.command)
+            }
         }
     }
     return commands
