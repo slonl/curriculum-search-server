@@ -1,6 +1,6 @@
 {
   "name": "json-search-server",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "json text search server",
   "main": "src/main.mjs",
   "type": "module",
@@ -12,9 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
-    "curriculum-js": "^0.3.8",
     "express": "^4.17.3",
     "flexsearch": "^0.7.21",
-    "memory-cache": "^0.2.0"
+    "memory-cache": "^0.2.0",
+    "@muze-nl/jsontag": "^0.9.11",
+    "@muze-nl/od-jsontag": "^0.3.4"
   }
 }
